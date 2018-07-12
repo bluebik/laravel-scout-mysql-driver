@@ -20,9 +20,13 @@ class Like extends Mode
         $queryString .= '(';
 
         foreach ($this->fields as $field) {
-            $data = explode(':', $field);
-            $field = $data[count($data) > 1?1:0];
-            $queryString .= "`$field` LIKE ? OR ";
+            $data = explode('.', $field);
+            $field = '';
+            foreach($data as $index => $f){
+                $field .= $index == 0?"`$f`":".`$f`";
+            }
+
+            $queryString .= "$field LIKE ? OR ";
         }
 
         $queryString = trim($queryString, 'OR ');

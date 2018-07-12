@@ -216,3 +216,25 @@ is less than `scout.mysql.min_fulltext_search_length` in `NATURAL_LANGUAGE` or `
 * `scout.mysql.query_expansion` - If set to true MySQL query expansion will be used in search queries. Only applies if
 using `NATURAL_LANGUAGE` mode. For more information see
 [MySQL's Full-Text Searches with Query Expansion documentation](http://dev.mysql.com/doc/refman/5.7/en/fulltext-query-expansion.html).
+
+# Important Changes
+
+In model that use **Searchable** should return an array which the structure is below (consist of **select**, **join**, and **fields** keys)
+```php
+public function toSearchableArray()
+    {
+        return [
+            'select' => 'news.id',
+            'join' => [
+                'campaigns' => ['campaigns.news_id', '=', 'news.id'],
+            ],
+            'fields'=> [
+                'title' => $this->title,
+                'content' => $this->content,
+                'campaigns.name' => '',
+            ]
+        ];
+    }
+
+```
+

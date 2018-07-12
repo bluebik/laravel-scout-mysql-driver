@@ -22,11 +22,14 @@ class LikeExpanded extends Mode
         $queryString .= '(';
 
         foreach ($this->fields as $field) {
-            $data = explode(':', $field);
-            $field = $data[count($data) > 1?1:0];
+            $data = explode('.', $field);
+            $field = '';
+            foreach($data as $index => $f){
+                $field .= $index == 0?"`$f`":".`$f`";
+            }
 
             foreach ($words as $word) {
-                $queryString .= "`$field` LIKE ? OR ";
+                $queryString .= "$field LIKE ? OR ";
             }
         }
 

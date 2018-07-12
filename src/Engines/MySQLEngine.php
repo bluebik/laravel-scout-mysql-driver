@@ -53,14 +53,28 @@ class MySQLEngine extends Engine
 
         $whereRawString = $mode->buildWhereRawString($builder);
         $params = $mode->buildParams($builder);
-        $relations = $mode->getRelations($builder);
+        $operations = $mode->getOperations($builder);
+
         $model = $builder->model;
-        if(count($relations) > 0){
-            $query = $model::with($relations)->whereRaw($whereRawString, $params);
+        $query = null;
+        foreach($operations['join'] as $table => $condition){
+            if(!isset($query)){
+                $query = $model::join($table, $condition[0], $condition[1], $condition[2]);
+            }
+            else{
+                $query = $query->join($table, $condition[0], $condition[1], $condition[2]);
+            }
         }
-        else{
+
+        if(!isset($query)){
             $query = $model::whereRaw($whereRawString, $params);
         }
+        else{
+            $query = $query->whereRaw($whereRawString, $params);
+        }
+
+        $query = $query->select($operations['select'])->distinct();
+
 
         $result['count'] = $query->count();
 

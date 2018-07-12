@@ -71,7 +71,17 @@ class ModelService
     {
         $columns = $this->getAllFields();
 
-        return array_keys((new $this->model())->forceFill($columns)->toSearchableArray());
+        return array_keys((new $this->model())->forceFill($columns)->toSearchableArray()['fields']);
+    }
+
+    public function getSearchableOperations()
+    {
+        $columns = $this->getAllFields();
+        $operations = (new $this->model())->forceFill($columns)->toSearchableArray();
+        return [
+            'join' => $operations['join'] ?? [],
+            'select' => $operations['select'] ?? '*',
+        ];
     }
 
     protected function getAllFields()
