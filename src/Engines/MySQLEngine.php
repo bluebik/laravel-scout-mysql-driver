@@ -53,9 +53,14 @@ class MySQLEngine extends Engine
 
         $whereRawString = $mode->buildWhereRawString($builder);
         $params = $mode->buildParams($builder);
-
+        $relations = $mode->getRelations($builder);
         $model = $builder->model;
-        $query = $model::whereRaw($whereRawString, $params);
+        if(count($relations) > 0){
+            $query = $model::with($relations)->whereRaw($whereRawString, $params);
+        }
+        else{
+            $query = $model::whereRaw($whereRawString, $params);
+        }
 
         $result['count'] = $query->count();
 

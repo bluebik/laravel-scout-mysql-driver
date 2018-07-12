@@ -55,4 +55,21 @@ abstract class Mode
 
         return $result;
     }
+
+    public function getRelations(Builder $builder)
+    {
+        $relations = [];
+
+        $this->fields = $this->modelService->setModel($builder->model)->getSearchableFields();
+
+
+        foreach ($this->fields as $field) {
+            $data = explode(':', $field);
+            if(count($data) > 1){
+                $relations[] = $data[0];
+            }
+        }
+
+        return array_unique($relations);
+    }
 }

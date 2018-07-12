@@ -22,6 +22,9 @@ class LikeExpanded extends Mode
         $queryString .= '(';
 
         foreach ($this->fields as $field) {
+            $data = explode(':', $field);
+            $field = $data[count($data) > 1?1:0];
+
             foreach ($words as $word) {
                 $queryString .= "`$field` LIKE ? OR ";
             }
@@ -30,7 +33,7 @@ class LikeExpanded extends Mode
         $queryString = trim($queryString, 'OR ');
         $queryString .= ')';
 
-        return$queryString;
+        return $queryString;
     }
 
     public function buildParams(Builder $builder)
