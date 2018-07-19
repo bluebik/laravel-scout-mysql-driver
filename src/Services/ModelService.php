@@ -33,7 +33,7 @@ class ModelService
 
         $this->tableName = $modelInstance->getTable();
 
-        $this->tablePrefixedName = $this->tablePrefix.$this->tableName;
+        $this->tablePrefixedName = $this->tablePrefix . $this->tableName;
 
         $this->indexName = $modelInstance->searchableAs();
 
@@ -81,6 +81,7 @@ class ModelService
         return [
             'join' => $operations['join'] ?? [],
             'select' => $operations['select'] ?? '*',
+            'where' => $operations['where'] ?? [],
         ];
     }
 

@@ -57,19 +57,26 @@ class MySQLEngine extends Engine
 
         $model = $builder->model;
         $query = null;
-        foreach($operations['join'] as $table => $condition){
-            if(!isset($query)){
+
+        foreach ($operations['join'] as $table => $condition) {
+            if (!isset($query)) {
                 $query = $model::join($table, $condition[0], $condition[1], $condition[2]);
-            }
-            else{
+            } else {
                 $query = $query->join($table, $condition[0], $condition[1], $condition[2]);
             }
         }
 
-        if(!isset($query)){
-            $query = $model::whereRaw($whereRawString, $params);
+        foreach ($operations['where'] as $table => $condition) {
+            if (!isset($query)) {
+                $query = $model::where($condition[0], $condition[1], $condition[2]);
+            } else {
+                $query = $query->where($condition[0], $condition[1], $condition[2]);
+            }
         }
-        else{
+
+        if (!isset($query)) {
+            $query = $model::whereRaw($whereRawString, $params);
+        } else {
             $query = $query->whereRaw($whereRawString, $params);
         }
 
@@ -147,6 +154,6 @@ class MySQLEngine extends Engine
     protected function shouldUseFallback($builder)
     {
         return $this->mode->isFullText() &&
-        strlen($builder->query) < config('scout.mysql.min_fulltext_search_length');
+            strlen($builder->query) < config('scout.mysql.min_fulltext_search_length');
     }
 }
